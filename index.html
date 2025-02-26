@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Untitled Clicker Game</title>
+    <style>
+        /* Basic reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Body styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #2a1a47; /* Dark purple background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Game container styling */
+        .game-container {
+            background-color: #7f7f7f; /* White background for the game container */
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        /* Flexbox for game content */
+        .game-content {
+            display: flex; /* Align items horizontally */
+        }
+
+        /* Heading */
+        h1 {
+            margin-bottom: 30px;
+            font-size: 2.2em;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            color: #ffffff; /* Purple color for the heading */
+        }
+
+        /* Centering the score */
+        #score {
+            font-size: 3em;
+            margin-bottom: 20px;
+            color: #333;
+            text-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            transition: transform 0.1s ease-in-out;
+        }
+
+        /* Clickable image styling */
+        .click-container {
+            display: flex;
+            justify-content: center;
+            margin-right: 20px; /* Add space between the image and upgrade panel */
+        }
+
+        /* Click image styling */
+        #clickImage {
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out;
+            width: 400px; /* Size of the image */
+            height: 400px; /* Size of the image */
+        }
+
+        /* Hover effect for the clickable image */
+        #clickImage:hover {
+            transform: scale(1.2);
+        }
+
+        /* Upgrade panel styling */
+        .upgrade-panel {
+            background-color: #8f8f8f; /* White background for the upgrade panel */
+            border-radius: 15px; /* Rounded corners */
+            padding: 20px; /* Padding for the panel */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Shadow for the panel */
+            display: flex;
+            flex-direction: column; /* Align upgrades vertically */
+            align-items: flex-start; /* Align upgrades to the left */
+        }
+
+        /* Upgrade section styling */
+        .upgrade {
+            margin-top: 20px;
+        }
+
+        /* Button styling */
+        button {
+            padding: 10px 20px; /* Adjust padding for smaller buttons */
+            font-size: 1em; /* Smaller font size */
+            cursor: pointer;
+            background-color: #4caf50; /* Green background */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            text-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s ease, transform 0.2s;
+            width: 220px; /* Fixed width for all buttons */
+        }
+
+        button:hover {
+            background-color: #45a049; /* Darker green on hover */
+            transform: scale(1.1);
+        }
+
+        /* Developer panel styling */
+        #devPanel {
+            position: absolute; /* Position it relative to the container */
+            top: 20px; /* Adjust as needed */
+            right: 20px; /* Adjust as needed */
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Dev options button styling */
+        #devOptionsButton {
+            position: absolute; /* Position at the bottom right */
+            bottom: 20px; /* Adjust to desired bottom space */
+            right: 20px; /* Adjust to desired right space */
+            padding: 8px 6px; /* Smaller padding */
+            font-size: 0.8em; /* Smaller font size */
+        }
+
+        /* Hidden class to hide elements */
+        .hidden {
+            display: none;
+        }
+
+        /* Fade-in animation for the game */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>Untitled Clicker Game</h1>
+        <div id="score">0</div>
+        <div class="game-content">
+            <div class="click-container">
+                <img id="clickImage" src="C:\Users\sorha\Downloads\unnamed-removebg-preview.png" alt="Click Me!">
+            </div>
+            <div class="upgrade-panel">
+                <div class="upgrade">
+                    <button id="upgradeButton">+1 per Click (Cost: <span id="upgradeCost">10</span>)</button>
+                    <div>Owned: <span id="clickUpgradeCount">0</span></div>
+                </div>
+                <div class="upgrade">
+                    <button id="autoclickerButton">Autoclicker (Cost: <span id="autoclickerCost">50</span>)</button>
+                    <div>Owned: <span id="autoclickerUpgradeCount">0</span></div>
+                </div>
+                <div class="upgrade">
+                    <button id="fasterAutoclickerButton">Faster Autoclicker (Cost: <span id="fasterAutoclickerCost">100</span>)</button>
+                    <div>Owned: <span id="fasterAutoclickerCount">0</span></div>
+                </div>
+                <div class="upgrade">
+                    <button id="doublePointsButton">Double Points (Cost: <span id="doublePointsCost">200</span>)</button>
+                    <div>Owned: <span id="doublePointsCount">0</span></div>
+                </div>
+            </div>
+        </div>
+        <button id="devOptionsButton">Dev Options</button>
+        <div id="devPanel" class="hidden">
+            <h2>Developer Options</h2>
+            <label for="clickAmount">Enter Click Amount:</label>
+            <input type="number" id="clickAmount" min="1" placeholder="Amount">
+            <button id="addClicksButton">Give Clicks</button>
+            <button id="closeDevPanelButton">Close</button>
+        </div>
+    </div>
+
+    <script>
+        let score = 0; // Initialize score
+        let pointsPerClick = 1; // Points gained per click
+        let upgradeCost = 10; // Initial cost of the upgrade
+        let autoclickerCost = 50; // Initial cost of the autoclicker
+        let fasterAutoclickerCost = 100; // Initial cost of the faster autoclicker
+        let doublePointsCost = 200; // Initial cost of the double points upgrade
+        let autoclickerInterval = null; // Store the autoclicker interval
+        let autoclickerSpeed = 1000; // Initial speed of the autoclicker (in milliseconds)
+        let doublePointsActive = false; // Flag for double points upgrade
+
+        // Function to update the score displayed on the page
+        function updateScore() {
+            const scoreElement = document.getElementById('score');
+            scoreElement.innerText = formatScore(score);
+        }
+
+        // Function to format score with K, M, B, T, etc.
+        function formatScore(value) {
+            if (value >= 1e12) return (value / 1e12).toFixed(0) + 'T'; // Trillions
+            if (value >= 1e9) return (value / 1e9).toFixed(0) + 'B'; // Billions
+            if (value >= 1e6) return (value / 1e6).toFixed(0) + 'M'; // Millions
+            if (value >= 1e3) return (value / 1e3).toFixed(0) + 'K'; // Thousands
+            return value; // Return original value if less than 1000
+        }
+
+        // Function to handle image clicks
+        function handleImageClick() {
+            score += pointsPerClick; // Increase score by points per click
+            updateScore(); // Update the displayed score
+        }
+
+        // Function to purchase an upgrade
+        function buyUpgrade() {
+            if (score >= upgradeCost) {
+                score -= upgradeCost; // Deduct cost from score
+                pointsPerClick++; // Increase points per click
+                upgradeCost = Math.ceil(upgradeCost * 1.5); // Increase upgrade cost
+                document.getElementById('upgradeCost').innerText = upgradeCost; // Update displayed cost
+                document.getElementById('clickUpgradeCount').innerText = parseInt(document.getElementById('clickUpgradeCount').innerText) + 1; // Increment owned upgrades
+                updateScore(); // Update the displayed score
+            }
+        }
+
+        // Function to purchase an autoclicker
+        function buyAutoclicker() {
+            if (score >= autoclickerCost) {
+                score -= autoclickerCost; // Deduct cost from score
+                document.getElementById('autoclickerUpgradeCount').innerText = parseInt(document.getElementById('autoclickerUpgradeCount').innerText) + 1; // Increment owned autoclickers
+                clearInterval(autoclickerInterval); // Clear existing autoclicker interval
+                autoclickerInterval = setInterval(() => {
+                    score += pointsPerClick; // Increment score based on points per click
+                    updateScore(); // Update the displayed score
+                }, autoclickerSpeed); // Set interval speed
+                autoclickerCost = Math.ceil(autoclickerCost * 1.5); // Increase autoclicker cost
+                document.getElementById('autoclickerCost').innerText = autoclickerCost; // Update displayed cost
+                updateScore(); // Update the displayed score
+            }
+        }
+
+        // Function to purchase a faster autoclicker
+        function buyFasterAutoclicker() {
+            if (score >= fasterAutoclickerCost) {
+                score -= fasterAutoclickerCost; // Deduct cost from score
+                clearInterval(autoclickerInterval); // Clear existing autoclicker interval
+                autoclickerSpeed = Math.max(100, autoclickerSpeed - 200); // Speed up the autoclicker (min speed 100ms)
+                autoclickerInterval = setInterval(() => {
+                    score += pointsPerClick; // Increment score based on points per click
+                    updateScore(); // Update the displayed score
+                }, autoclickerSpeed); // Set interval speed
+                document.getElementById('fasterAutoclickerCount').innerText = parseInt(document.getElementById('fasterAutoclickerCount').innerText) + 1; // Increment owned faster autoclickers
+                fasterAutoclickerCost = Math.ceil(fasterAutoclickerCost * 1.5); // Increase faster autoclicker cost
+                document.getElementById('fasterAutoclickerCost').innerText = fasterAutoclickerCost; // Update displayed cost
+                updateScore(); // Update the displayed score
+            }
+        }
+
+        // Function to purchase a double points upgrade
+        function buyDoublePoints() {
+            if (score >= doublePointsCost) {
+                score -= doublePointsCost; // Deduct cost from score
+                doublePointsActive = true; // Activate double points
+                document.getElementById('doublePointsCount').innerText = parseInt(document.getElementById('doublePointsCount').innerText) + 1; // Increment owned double points
+                doublePointsCost = Math.ceil(doublePointsCost * 1.5); // Increase double points cost
+                document.getElementById('doublePointsCost').innerText = doublePointsCost; // Update displayed cost
+                updateScore(); // Update the displayed score
+            }
+        }
+
+        // Function to give clicks via developer panel
+        function giveClicks(amount) {
+            score += amount; // Add specified amount of clicks
+            updateScore(); // Update the displayed score
+        }
+
+        // Set up event listeners for buttons
+        document.getElementById('clickImage').addEventListener('click', handleImageClick); // Click handler for image
+        document.getElementById('upgradeButton').addEventListener('click', buyUpgrade); // Click handler for upgrade button
+        document.getElementById('autoclickerButton').addEventListener('click', buyAutoclicker); // Click handler for autoclicker button
+        document.getElementById('fasterAutoclickerButton').addEventListener('click', buyFasterAutoclicker); // Click handler for faster autoclicker button
+        document.getElementById('doublePointsButton').addEventListener('click', buyDoublePoints); // Click handler for double points button
+
+        // Set up event listeners for developer panel
+        document.getElementById('addClicksButton').addEventListener('click', () => {
+            const clickAmount = parseInt(document.getElementById('clickAmount').value) || 0; // Get click amount from input
+            giveClicks(clickAmount); // Give clicks
+        });
+
+        // Show developer panel on button click
+        document.getElementById('devOptionsButton').addEventListener('click', () => {
+            document.getElementById('devPanel').classList.remove('hidden'); // Show developer panel
+        });
+
+        // Close developer panel on button click
+        document.getElementById('closeDevPanelButton').addEventListener('click', () => {
+            document.getElementById('devPanel').classList.add('hidden'); // Hide developer panel
+        });
+    </script>
+</body>
+</html>
